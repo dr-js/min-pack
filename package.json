@@ -1,0 +1,27 @@
+{
+  "private": true,
+  "name": "@min-pack/*",
+  "description": "Minified repack for some packages.",
+  "author": "dr-js",
+  "license": "MIT",
+  "repository": "github:dr-js/min-pack",
+  "scripts": {
+    "// pack ========================": "",
+    "pack:npm": "npm pack ./min-pack-npm/",
+    "// publish =====================": "",
+    "publish:npm": "npm publish --access public ./min-pack-npm/",
+    "// =============================": "",
+    "lint": "eslint ./min-pack-*/ --ext .js,.mjs",
+    "test": "npm run lint",
+    "prepack": "echo \"Error: pack with script-*\" && exit 1"
+  },
+  "engines": {
+    "node": ">=16",
+    "npm": ">=8"
+  },
+  "devDependencies": {
+    "@dr-js/core": "^0.4.23",
+    "@dr-js/dev": "^0.4.27",
+    "@dr-js/dev-eslint": "^0.4.27"
+  }
+}
