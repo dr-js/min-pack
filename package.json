@@ -8,8 +8,10 @@
   "scripts": {
     "// pack ========================": "",
     "pack:npm": "npm pack ./min-pack-npm/",
+    "pack:ssh2": "cd min-pack-ssh2/ && npm run build",
     "// publish =====================": "",
     "publish:npm": "npm publish --access public ./min-pack-npm/",
+    "publish:ssh2": "cd min-pack-ssh2/ && npm run build-publish",
     "// =============================": "",
     "lint": "eslint ./min-pack-*/ --ext .js,.mjs",
     "test": "npm run lint",

@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "name": "@min-pack/ssh2",
+  "description": "Latest ssh2 without optional dependency & install script",
+  "scripts": {
+    "build": "node fetch-latest-ssh2.js",
+    "publish": "npm publish --access public output-gitignore/",
+    "build-publish": "dr-dev --rsl build publish"
+  }
+}
