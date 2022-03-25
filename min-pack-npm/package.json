@@ -1,6 +1,6 @@
 {
   "name": "@min-pack/npm",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Provide npm6 & npm8 commands",
   "bin": {
     "npm6": "./bin-npm6.js",
