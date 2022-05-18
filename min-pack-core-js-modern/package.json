@@ -1,0 +1,20 @@
+{
+  "private": true,
+  "name": "@min-pack/core-js-modern",
+  "version": "0.0.1",
+  "description": "Custom build 'core-js-bundle' targets: 'chrome 60, safari 12, firefox 55, edge 79'",
+  "main": "./core-js-modern.js",
+  "scripts": {
+    "bundle-core-js-modern": "node bundle-core-js-modern.js",
+    "build": "node build.js",
+    "publish": "npm publish --access public output-gitignore/",
+    "build-publish": "dr-dev --rsl build publish"
+  },
+  "config": {
+    "CORE_JS_TARGET": "chrome 60, safari 12, firefox 55, edge 79"
+  },
+  "devDependencies": {
+    "core-js-builder": "^3.22.5",
+    "core-js-compat": "^3.22.5"
+  }
+}
