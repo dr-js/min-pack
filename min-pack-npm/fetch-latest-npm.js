@@ -1,4 +1,4 @@
-const { basename } = require('path')
+const { basename } = require('node:path')
 
 const { runKit } = require('@dr-js/core/library/node/kit.js')
 const { resetDirectory } = require('@dr-js/core/library/node/fs/Directory.js')

@@ -18,12 +18,12 @@
     "prepack": "echo \"Error: pack with script-*\" && exit 1"
   },
   "engines": {
-    "node": ">=16",
-    "npm": ">=8"
+    "node": ">=16.13",
+    "npm": ">=8.3"
   },
   "devDependencies": {
-    "@dr-js/core": "^0.4.31",
-    "@dr-js/dev": "^0.4.36",
-    "@dr-js/dev-eslint": "^0.4.36"
+    "@dr-js/core": "^0.5.0-dev.3",
+    "@dr-js/dev": "^0.5.0-dev.2",
+    "@dr-js/dev-babel": "^0.5.0-dev.2"
   }
 }
