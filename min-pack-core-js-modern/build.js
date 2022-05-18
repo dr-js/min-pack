@@ -8,10 +8,14 @@ runKit(async (kit) => {
   await initOutput({ kit })
   await modifyCopy(kit.fromRoot('node_modules/core-js-compat/LICENSE'), kit.fromOutput('LICENSE'))
   await editPackageJSON((packageJSON) => {
-    // packageJSON[ 'version' ] = require('core-js-builder/package.json').version
+    const builderPackageJSON = require('core-js-builder/package.json')
+    const compatPackageJSON = require('core-js-compat/package.json')
+
+    // packageJSON[ 'version' ] = builderPackageJSON.version
+    packageJSON[ 'license' ] = builderPackageJSON.license
     packageJSON[ 'config' ][ 'CORE_JS_VERSION' ] = [
-      `core-js-builder@${require('core-js-builder/package.json').version}`,
-      `core-js-compat@${require('core-js-compat/package.json').version}`
+      `core-js-builder@${builderPackageJSON.version}`,
+      `core-js-compat@${compatPackageJSON.version}`
     ].join(' ')
     return packageJSON
   }, kit.fromOutput('package.json'))
