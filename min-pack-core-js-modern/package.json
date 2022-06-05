@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@min-pack/core-js-modern",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "__TBD__",
   "description": "Custom build 'core-js-bundle' targets: 'chrome 60, safari 12, firefox 55, edge 79'",
   "main": "./bundle.js",
@@ -15,7 +15,7 @@
     "CORE_JS_TARGET": "chrome 60, safari 12, firefox 55, edge 79"
   },
   "devDependencies": {
-    "core-js-builder": "^3.22.5",
-    "core-js-compat": "^3.22.5"
+    "core-js-builder": "3",
+    "core-js-compat": "3"
   }
 }
