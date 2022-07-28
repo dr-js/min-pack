@@ -7,7 +7,7 @@ const { initOutput } = require('@dr-js/dev/library/output.js')
 runKit(async (kit) => {
   await modifyDeleteForce(kit.fromRoot('node_modules/'))
   await modifyDeleteForce(kit.fromRoot('package-lock.json'))
-  kit.RUN('npm install --lockfile-version 3 --no-audit --no-fund')
+  kit.RUN('npm install --lockfile-version 3 --no-audit --no-fund --no-update-notifier')
 
   await initOutput({ kit })
   await modifyCopy(kit.fromRoot('node_modules/core-js-compat/LICENSE'), kit.fromOutput('LICENSE'))
