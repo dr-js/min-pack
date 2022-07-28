@@ -1,12 +1,13 @@
 {
   "name": "@min-pack/npm",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Provide npm6 & npm8 commands",
   "bin": {
     "npm6": "./bin-npm6.js",
     "npm8": "./bin-npm8.js"
   },
   "scripts": {
+    "check-version": "npm view npm",
     "prepack": "node fetch-latest-npm.js"
   },
   "bundledDependencies": [
