@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "name": "@min-pack/sharp",
+  "description": "Latest sharp with linux x64/arm64 binary preloaded",
+  "scripts": {
+    "build": "node fetch-latest-sharp.js",
+    "publish": "npm publish --access public output-gitignore/",
+    "build-publish": "dr-dev --rsl build publish"
+  }
+}
