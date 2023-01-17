@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@min-pack/core-js-modern",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "license": "__TBD__",
   "description": "Custom build 'core-js-bundle' targets: 'chrome 60, safari 12, firefox 55, edge 79'",
   "main": "./bundle.js",
