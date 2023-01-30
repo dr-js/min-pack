@@ -28,14 +28,6 @@ const fetchNpm = async (
   await modifyDelete(tgzPath)
   await modifyDelete(unpackPath)
 
-  kit.stepLog('trim "changelogs|docs|man"')
-  await modifyDeleteForce(kit.fromRoot(resultPath, 'changelogs/'))
-  await modifyDeleteForce(kit.fromRoot(resultPath, 'docs/'))
-  await modifyDeleteForce(kit.fromRoot(resultPath, 'man/'))
-
-  const trimFileList = await trimFileNodeModules(resultPath)
-  kit.stepLog(`trim ${trimFileList.length} file`)
-
   kit.stepLog('trim "package.json"')
   await editPackageJSON((packageJSON) => {
     for (const key of [
@@ -45,6 +37,20 @@ const fetchNpm = async (
     ]) packageJSON[ key ] = undefined
     return packageJSON
   }, kit.fromRoot(resultPath, 'package.json'))
+
+  kit.stepLog('update bundled deps (slow)')
+  kit.RUN('npm update --no-audit --no-fund', { cwd: resultPath, quiet: true })
+
+  kit.stepLog('audit deps')
+  kit.RUN('npm audit --audit-level=high', { cwd: resultPath, quiet: true })
+
+  kit.stepLog('trim "changelogs|docs|man"')
+  await modifyDeleteForce(kit.fromRoot(resultPath, 'changelogs/'))
+  await modifyDeleteForce(kit.fromRoot(resultPath, 'docs/'))
+  await modifyDeleteForce(kit.fromRoot(resultPath, 'man/'))
+
+  const trimFileList = await trimFileNodeModules(resultPath)
+  kit.stepLog(`trim ${trimFileList.length} file`)
 }
 
 runKit(async (kit) => {
