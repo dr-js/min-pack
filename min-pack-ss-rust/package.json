@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "name": "@min-pack/ss-rust",
+  "version": "0.0.1",
+  "description": "Latest 'ssservice' binaries from 'shadowsocks-rust'",
+  "bin": {
+    "ss-rust": "bin.js",
+    "ssservice": "bin.js",
+    "SSRS": "bin.js"
+  },
+  "scripts": {
+    "build": "node fetch-latest-ss-rust.js",
+    "publish": "npm publish --access public output-gitignore/",
+    "build-publish": "dr-dev --rsl build publish"
+  },
+  "config": {
+    "RELEASE_NAME": "__TBD__"
+  }
+}
