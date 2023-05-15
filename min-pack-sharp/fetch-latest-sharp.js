@@ -9,7 +9,7 @@ const { findPathFragList } = require('@dr-js/dev/library/node/file.js')
 const { trimFileNodeModules } = require('@dr-js/dev/library/node/package/Trim.js')
 const { editPackageJSON } = require('@dr-js/core/library/node/module/PackageJSON.js')
 
-const PACK_PACKAGE = 'sharp@0.30'
+const PACK_PACKAGE = 'sharp@0.32'
 const FIND_FRAG = /^sharp-0\..*/
 
 runKit(async (kit) => {
@@ -37,17 +37,19 @@ runKit(async (kit) => {
   await modifyDeleteForce(kit.fromOutput('install/'))
   await modifyDeleteForce(kit.fromOutput('lib/agent.js'))
   await modifyDeleteForce(kit.fromOutput('src/'))
-  await modifyDeleteForce(kit.fromOutput('binding.gyp/'))
+  await modifyDeleteForce(kit.fromOutput('binding.gyp'))
 
   const trimFileList = await trimFileNodeModules(kit.fromOutput())
   kit.stepLog(`trim ${trimFileList.length} file`)
+  kit.RUN([ 'find', kit.fromOutput('vendor/'), '-empty', '-type', 'd', '-delete' ])
 
   kit.stepLog('trim "package.json"')
   await editPackageJSON((packageJSON) => {
     packageJSON[ 'name' ] = '@min-pack/sharp'
     for (const key of [
       'devDependencies', 'optionalDependencies',
-      'scripts', 'contributors', 'keywords', 'files'
+      'scripts', 'contributors', 'keywords', 'files',
+      'funding', 'semistandard', 'cc', 'tsd'
     ]) delete packageJSON[ key ]
     for (const packageName of [ // used for prebuild install
       'node-addon-api', 'prebuild-install', 'simple-get', 'tar-fs', 'tunnel-agent'
