@@ -1,0 +1,18 @@
+{
+  "private": true,
+  "name": "@min-pack/kubectl",
+  "version": "0.0.1",
+  "description": "Latest 'kubectl' binaries from 'kubernetes.io'",
+  "bin": {
+    "min-kubectl": "bin.js",
+    "kubectl": "bin.js"
+  },
+  "scripts": {
+    "build": "node fetch-latest-kubectl.js",
+    "publish": "npm publish --access public output-gitignore/",
+    "build-publish": "dr-dev --rsl build publish"
+  },
+  "config": {
+    "RELEASE_NAME": "__TBD__"
+  }
+}
