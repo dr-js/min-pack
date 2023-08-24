@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "name": "@min-pack/core-js-legacy",
+  "version": "0.1.0",
+  "license": "__TBD__",
+  "description": "Custom build 'core-js-bundle' targets: 'chrome 45, safari 11, firefox 52, edge 14'",
+  "main": "./bundle.js",
+  "scripts": {
+    "bundle-core-js-legacy": "node bundle-core-js-legacy.js",
+    "build": "node build.js",
+    "publish": "npm publish --access public output-gitignore/",
+    "build-publish": "dr-dev --rsl build publish"
+  },
+  "config": {
+    "CORE_JS_TARGET": "chrome 45, safari 11, firefox 52, edge 14"
+  },
+  "devDependencies": {
+    "core-js-builder": "3",
+    "core-js-compat": "3"
+  }
+}
