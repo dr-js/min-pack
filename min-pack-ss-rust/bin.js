@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const RUNTIME = `${process.platform}-${process.arch}`
-if (![ 'linux-x64', 'linux-amd64' ].includes(RUNTIME)) {
+if (![ 'linux-x64', 'linux-arm64' ].includes(RUNTIME)) {
   console.error(`bad RUNTIME: ${RUNTIME}`)
   process.exit(-1)
 }

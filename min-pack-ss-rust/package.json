@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@min-pack/ss-rust",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Latest 'ssservice' binaries from 'shadowsocks-rust'",
   "bin": {
     "ss-rust": "bin.js",
