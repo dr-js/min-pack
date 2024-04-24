@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@min-pack/kubectl",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Latest 'kubectl' binaries from 'kubernetes.io'",
   "bin": {
     "min-kubectl": "bin.js",
