@@ -1,32 +1,17 @@
-const { basename } = require('node:path')
-
 const { runKit } = require('@dr-js/core/library/node/kit.js')
 const { resetDirectory } = require('@dr-js/core/library/node/fs/Directory.js')
-const { modifyDelete, modifyDeleteForce, modifyRename } = require('@dr-js/core/library/node/fs/Modify.js')
-const { extractAutoAsync } = require('@dr-js/core/library/node/module/Archive/archive.js')
+const { modifyDeleteForce } = require('@dr-js/core/library/node/fs/Modify.js')
 
-const { findPathFragList } = require('@dr-js/dev/library/node/file.js')
 const { trimFileNodeModules } = require('@dr-js/dev/library/node/package/Trim.js')
 const { editPackageJSON } = require('@dr-js/core/library/node/module/PackageJSON.js')
+const { fetchNpmPkg } = require('../function.js')
 
 const fetchNpm = async (
   kit,
-  PACK_PACKAGE, // = 'npm@8',
-  FIND_FRAG // = /^npm-8.*/
+  pkgVerMain // = '8' or '6'
 ) => {
-  kit.stepLog(`download latest "${PACK_PACKAGE}"`)
-  kit.RUN([ 'npm', 'pack', PACK_PACKAGE ], { quiet: true })
-
-  const tgzPath = await findPathFragList(kit.PATH_ROOT, [ FIND_FRAG ])
-  const unpackPath = kit.fromRoot(`${PACK_PACKAGE}-unpack`)
-  const resultPath = kit.fromRoot('node_modules/', PACK_PACKAGE.replace(/\W/g, ''))
-  kit.stepLog(`unpack "${basename(tgzPath)}"`)
-  await resetDirectory(unpackPath)
-  await modifyDeleteForce(resultPath)
-  await extractAutoAsync(tgzPath, unpackPath)
-  await modifyRename(kit.fromRoot(unpackPath, 'package/'), resultPath)
-  await modifyDelete(tgzPath)
-  await modifyDelete(unpackPath)
+  const resultPath = kit.fromRoot(`node_modules/npm${pkgVerMain}`)
+  await fetchNpmPkg(kit, 'npm', pkgVerMain, resultPath)
 
   kit.stepLog('trim "package.json"')
   await editPackageJSON((packageJSON) => {
@@ -58,8 +43,8 @@ runKit(async (kit) => {
   await resetDirectory(kit.fromRoot('node_modules/'))
 
   kit.padLog('fetch latest npm@8')
-  await fetchNpm(kit, 'npm@8', /^npm-8.*/)
+  await fetchNpm(kit, '8')
 
   kit.padLog('fetch latest npm@6')
-  await fetchNpm(kit, 'npm@6', /^npm-6.*/)
+  await fetchNpm(kit, '6')
 }, { title: 'fetch-latest-npm' })
