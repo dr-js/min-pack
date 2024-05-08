@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "name": "@min-pack/lancedb",
+  "version": "0.0.1",
+  "description": "Latest @lancedb/lancedb with linux x64/arm64 binary preloaded",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js",
+    "build-webpack": "node build.webpack.js",
+    "publish": "npm publish --access public output-gitignore/",
+    "build-publish": "dr-dev --rsl build publish"
+  },
+  "config": {
+    "LANCEDB_VERSION": "{{TBD}}"
+  },
+  "overrides": {
+    "@lancedb/lancedb": {
+      "openai": "npm:1mb@0.0.4"
+    }
+  },
+  "devDependencies": {
+    "@lancedb/lancedb": "0.4.19"
+  }
+}
