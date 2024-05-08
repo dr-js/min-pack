@@ -10,7 +10,7 @@ runKit(async (kit) => {
   const config = getCommonWebpackConfig(({
     isNodeEnv: true,
     entry: { index: kit.fromRoot('build.webpack-index.js') },
-    externals: { 'sharp': 'sharp' }, // mark "sharp" as external
+    externals: { 'sharp': 'var Error' }, // mark "sharp" as external // TODO: NOTE: use 'Error' to skip init check in '@xenova/transformers/src/utils/image.js'
     output: { path: kit.fromOutput(), filename: 'index.js', library: { type: 'commonjs2' } },
     extraModuleRuleList: [ { test: /\.node$/, use: [ { loader: 'node-loader', options: { name: 'addon-[path][name].[ext]' } } ] } ]
   }))

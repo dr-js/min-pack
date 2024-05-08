@@ -14,10 +14,10 @@ runKit(async (kit) => {
 
   await editPackageJSON((packageJSON) => {
     packageJSON[ 'overrides' ] = undefined
-    const tfjsPackageJSON = require('@xenova/transformers/package.json')
-    packageJSON[ 'version' ] = tfjsPackageJSON.version
-    packageJSON[ 'license' ] = tfjsPackageJSON.license
-    packageJSON[ 'config' ][ 'TRANSFORMERS_JS_VERSION' ] = tfjsPackageJSON.version
+    const pkgPackageJSON = require('@xenova/transformers/package.json')
+    packageJSON[ 'version' ] ||= pkgPackageJSON.version
+    packageJSON[ 'license' ] = pkgPackageJSON.license
+    packageJSON[ 'config' ][ 'TRANSFORMERS_JS_VERSION' ] = pkgPackageJSON.version
     return packageJSON
   }, kit.fromOutput('package.json'))
 
