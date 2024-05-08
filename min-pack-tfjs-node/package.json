@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "name": "@min-pack/tfjs-node",
+  "description": "Latest transformers.js with linux x64/arm64 binary preloaded for Node.js usage",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js",
+    "build-webpack": "node build.webpack.js",
+    "publish": "npm publish --access public output-gitignore/",
+    "build-publish": "dr-dev --rsl build publish"
+  },
+  "config": {
+    "TRANSFORMERS_JS_VERSION": "{{TBD}}"
+  },
+  "overrides": {
+    "@xenova/transformers": {
+      "onnxruntime-web": "npm:1mb@0.0.4",
+      "sharp": "npm:1mb@0.0.4"
+    }
+  },
+  "devDependencies": {
+    "@xenova/transformers": "2.17.1",
+    "onnxruntime-node": "1.14.0"
+  }
+}
