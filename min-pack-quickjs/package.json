@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@min-pack/quickjs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Latest quickjs-emscripten (singlefile release sync) for browser & Node.js usage",
   "main": "index.js",
   "scripts": {

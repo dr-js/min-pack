@@ -1,6 +1,6 @@
 import variant from '@jitl/quickjs-singlefile-cjs-release-sync'
-import { newQuickJSWASMModuleFromVariant } from 'quickjs-emscripten-core'
+import { newQuickJSWASMModuleFromVariant, shouldInterruptAfterDeadline } from 'quickjs-emscripten-core'
 
-const initQuickJS = () => newQuickJSWASMModuleFromVariant(variant)
+const getQuickJS = async () => newQuickJSWASMModuleFromVariant(variant)
 
-export { initQuickJS }
+export { getQuickJS, shouldInterruptAfterDeadline }
