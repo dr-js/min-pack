@@ -34,9 +34,9 @@
     "npm": ">=8.3"
   },
   "devDependencies": {
-    "@dr-js/core": "^0.5.13",
-    "@dr-js/dev": "^0.5.13",
-    "@dr-js/dev-web": "^0.5.13",
+    "@dr-js/core": "^0.5.15",
+    "@dr-js/dev": "^0.5.14",
+    "@dr-js/dev-web": "^0.5.14",
     "node-loader": "^2.0.0"
   }
 }
