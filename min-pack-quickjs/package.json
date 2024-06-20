@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "name": "@min-pack/quickjs",
+  "version": "0.0.1",
+  "description": "Latest quickjs-emscripten (singlefile release sync) for browser & Node.js usage",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js",
+    "build-webpack": "node build.webpack.js",
+    "publish": "npm publish --access public output-gitignore/",
+    "build-publish": "dr-dev --rsl build publish"
+  },
+  "config": {
+    "QUICKJS_EMSCRIPTEN_CORE_VERSION": "{{TBD}}",
+    "QUICKJS_SINGLEFILE_CJS_RELEASE_SYNC_VERSION": "{{TBD}}"
+  },
+  "devDependencies": {
+    "@jitl/quickjs-singlefile-cjs-release-sync": "0.29.2",
+    "quickjs-emscripten-core": "0.29.2"
+  }
+}
