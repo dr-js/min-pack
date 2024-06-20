@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@min-pack/lancedb",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Latest @lancedb/lancedb with linux x64/arm64 binary preloaded",
   "main": "index.js",
   "scripts": {
