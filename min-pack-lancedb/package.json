@@ -19,6 +19,6 @@
     }
   },
   "devDependencies": {
-    "@lancedb/lancedb": "0.4.19"
+    "@lancedb/lancedb": "0.5.2"
   }
 }
