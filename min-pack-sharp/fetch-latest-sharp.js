@@ -1,44 +1,61 @@
 const { runKit } = require('@dr-js/core/library/node/kit.js')
+const { writeTextSync } = require('@dr-js/core/library/node/fs/File.js')
 const { resetDirectory } = require('@dr-js/core/library/node/fs/Directory.js')
-const { modifyDeleteForce, modifyCopy } = require('@dr-js/core/library/node/fs/Modify.js')
-
-const { trimFileNodeModules } = require('@dr-js/dev/library/node/package/Trim.js')
-const { editPackageJSON } = require('@dr-js/core/library/node/module/PackageJSON.js')
+const { modifyDeleteForce, modifyCopy, modifyRename } = require('@dr-js/core/library/node/fs/Modify.js')
+const { editPackageJSON, writePackageJSON } = require('@dr-js/core/library/node/module/PackageJSON.js')
+const { trimFileNodeModules, trimEmptyFolder } = require('@dr-js/dev/library/node/package/Trim.js')
 const { fetchNpmPkg } = require('../function.js')
 
 runKit(async (kit) => {
   kit.padLog('reset output')
   await resetDirectory(kit.fromOutput())
-  await fetchNpmPkg(kit, 'sharp', '0.32.x')
 
-  kit.stepLog('preload binary') // https://sharp.pixelplumbing.com/install#cross-platform
-  kit.RUN('npm install --omit=dev --omit=optional', { cwd: kit.fromOutput() })
-  kit.RUN('npm run install --platform=linux --arch=x64', { cwd: kit.fromOutput() })
-  kit.RUN('npm run install --platform=linux --arch=arm64', { cwd: kit.fromOutput() })
-
-  kit.stepLog('manual trim')
-  await modifyDeleteForce(kit.fromOutput('install/'))
-  await modifyDeleteForce(kit.fromOutput('lib/agent.js'))
-  await modifyDeleteForce(kit.fromOutput('src/'))
-  await modifyDeleteForce(kit.fromOutput('binding.gyp'))
-
-  const trimFileList = await trimFileNodeModules(kit.fromOutput())
-  kit.stepLog(`trim ${trimFileList.length} file`)
-  kit.RUN([ 'find', kit.fromOutput('vendor/'), '-empty', '-type', 'd', '-delete' ])
+  const fromOutPkg = (...args) => kit.fromOutput('pkg/', ...args)
+  await fetchNpmPkg(kit, 'sharp', '0.33.x', fromOutPkg())
 
   kit.stepLog('trim "package.json"')
+  const sharpPkgJSON = require(fromOutPkg('package.json'))
   await editPackageJSON((packageJSON) => {
-    packageJSON[ 'name' ] = '@min-pack/sharp'
     for (const key of [
       'devDependencies', 'optionalDependencies',
-      'scripts', 'contributors', 'keywords', 'files',
-      'funding', 'semistandard', 'cc', 'tsd'
+      'scripts', 'contributors', 'keywords', 'files', 'binary', 'type', 'types',
+      'funding', 'semistandard', 'cc', 'tsd', 'nyc'
     ]) delete packageJSON[ key ]
-    for (const packageName of [ // used for prebuild install
-      'node-addon-api', 'prebuild-install', 'simple-get', 'tar-fs', 'tunnel-agent'
-    ]) delete packageJSON[ 'dependencies' ][ packageName ]
     return packageJSON
-  }, kit.fromOutput('package.json'))
+  }, fromOutPkg('package.json'))
 
+  kit.stepLog('install dep')
+  kit.RUN('npm install --lockfile-version 3 --no-audit --no-fund --no-update-notifier', { cwd: fromOutPkg() })
+
+  kit.stepLog('preload binary') // https://sharp.pixelplumbing.com/install#cross-platform
+  const { version: pkgVersion, optionalDependencies: optDep } = sharpPkgJSON
+  kit.padLog(`force install linux x64/arm64 addon @${pkgVersion}`)
+  for (const pkgAddon of [
+    '@img/sharp-linux-arm64', '@img/sharp-libvips-linux-arm64',
+    '@img/sharp-linux-x64', '@img/sharp-libvips-linux-x64'
+  ]) {
+    await modifyDeleteForce(fromOutPkg('node_modules/', pkgAddon))
+    await fetchNpmPkg(kit, pkgAddon, optDep[ pkgAddon ] || pkgVersion, fromOutPkg('node_modules/', pkgAddon))
+  }
+
+  kit.stepLog('manual trim')
+  await modifyDeleteForce(fromOutPkg('install/'))
+  await modifyDeleteForce(fromOutPkg('src/'))
+
+  const trimFileList = await trimFileNodeModules(fromOutPkg())
+  kit.stepLog(`trim ${trimFileList.length} file`)
+  const trimFolderList = await trimEmptyFolder(fromOutPkg())
+  kit.stepLog(`trim ${trimFolderList.length} folder`)
+
+  const rootPkgJSON = require('./package.json')
+  await writePackageJSON(kit.fromOutput('package.json'), {
+    name: rootPkgJSON.name,
+    version: rootPkgJSON.version || sharpPkgJSON.version,
+    description: rootPkgJSON.description,
+    license: sharpPkgJSON.license,
+    main: 'index.js'
+  })
+  writeTextSync(kit.fromOutput('index.js'), 'module.exports = require("./pkg")')
+  await modifyRename(fromOutPkg('LICENSE'), kit.fromOutput('LICENSE'))
   await modifyCopy(kit.fromRoot('README.md'), kit.fromOutput('README.md'))
 }, { title: 'fetch-latest-sharp' })
