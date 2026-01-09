@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "name": "@min-pack/turndown",
+  "version": "7.2.2",
+  "description": "Latest turndown bundled as ES module for Node.js/Browser usage",
+  "main": "index.mjs",
+  "scripts": {
+    "build": "node build.js",
+    "build-webpack": "node build.webpack.js",
+    "publish": "npm publish --access public output-gitignore/",
+    "build-publish": "dr-dev --rsl build publish"
+  },
+  "config": {
+    "TURNDOWN_VERSION": "{{TBD}}"
+  },
+  "devDependencies": {
+    "turndown": "7.2.2"
+  }
+}
