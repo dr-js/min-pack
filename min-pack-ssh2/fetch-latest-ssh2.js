@@ -10,7 +10,7 @@ runKit(async (kit) => {
   kit.padLog('reset output')
   await resetDirectory(kit.fromOutput())
 
-  await fetchNpmPkg(kit, 'ssh', '1.x')
+  await fetchNpmPkg(kit, 'ssh2', '1.x')
 
   kit.stepLog('manual trim')
   await modifyDeleteForce(kit.fromOutput('.github/'))
