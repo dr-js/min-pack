@@ -3,9 +3,9 @@ const { join } = require('node:path')
 const { binary } = require('@dr-js/core/library/common/format.js')
 const { readBufferSync } = require('@dr-js/core/library/node/fs/File.js')
 const { runKit } = require('@dr-js/core/library/node/kit.js')
-const Sharp = require('./output-gitignore/') // console.log(Sharp.versions)
 
 runKit(async (kit) => {
+  const Sharp = require(kit.fromRoot('./output-gitignore/'))
   kit.log('Sharp:', JSON.stringify(Sharp.versions, null, 2))
 
   for (const path of [
@@ -20,7 +20,10 @@ runKit(async (kit) => {
     const bufferSrc = readBufferSync(join(__dirname, path))
     kit.log(`bufferSrc: ${binary(bufferSrc.byteLength)}B`)
 
-    const { format, pages, loop, hasAlpha, autoOrient: { width, height } } = await Sharp(bufferSrc).metadata()
+    const {
+      format, pages, loop, hasAlpha,
+      width: _w, height: _h, autoOrient: { width, height } = { width: _w, height: _h } // TODO: patch `autoOrient` is added in sharp@0.34
+    } = await Sharp(bufferSrc).metadata()
     kit.log('metadata:', JSON.stringify({ format, width, height, pages, loop, hasAlpha }))
 
     const isAnimated = format === 'gif'

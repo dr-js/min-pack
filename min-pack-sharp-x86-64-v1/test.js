@@ -1,0 +1,1 @@
+../min-pack-sharp/test.js

@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "name": "@min-pack/sharp-x86-64-v1",
+  "description": "Fallback sharp with linux x86-64-v1 binary preloaded for Node.js usage",
+  "scripts": {
+    "build": "node fetch-latest-sharp.js",
+    "publish": "npm publish --access public output-gitignore/",
+    "build-publish": "dr-dev --rsl build publish"
+  }
+}
