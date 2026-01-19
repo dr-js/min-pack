@@ -1,0 +1,20 @@
+{
+  "private": true,
+  "name": "@min-pack/jszip",
+  "version": "3.10.1",
+  "description": "Latest JSZip bundled as ES module for Node.js/Browser usage",
+  "license": "MIT",
+  "main": "index.mjs",
+  "scripts": {
+    "build": "node build.js",
+    "build-webpack": "node build.webpack.js",
+    "publish": "npm publish --access public output-gitignore/",
+    "build-publish": "dr-dev --rsl build publish"
+  },
+  "config": {
+    "JSZIP_VERSION": "{{TBD}}"
+  },
+  "devDependencies": {
+    "jszip": "3.10.1"
+  }
+}
