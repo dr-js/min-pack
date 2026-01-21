@@ -12,8 +12,8 @@ runKit(async (kit) => {
     externalsType: 'var',
     externals: {
       // "pako": "~1.0.2", // bundle
+      // "setimmediate": "^1.0.5" // bundle
       'lie': 'undefined', // drop ES6 patch
-      'setimmediate': 'undefined', // drop JS patch
       'readable-stream': 'undefined' // drop node-specific patch, only for `generateNodeStream|nodeStream` API
     },
     experiments: { outputModule: true }
