@@ -15,9 +15,11 @@ runKit(async (kit) => {
     headers: { 'x-github-api-version': '2022-11-28', 'accept': 'application/vnd.github+json', 'user-agent': 'dr-js/min-pack' }, jumpMax: 8, timeout: 42 * 1000
   })).json()
   kit.log(`get release: "${RELEASE_NAME}", assets: ${RELEASE_ASSET_LIST.length}`)
-  await writeText(kit.fromOutput('ssservice.info'), RELEASE_NAME)
+  const infoList = [ RELEASE_NAME ]
   for (const { name, browser_download_url: assetUrl } of RELEASE_ASSET_LIST) {
-    if (!name.endsWith('aarch64-unknown-linux-gnu.tar.xz') && !name.endsWith('x86_64-unknown-linux-gnu.tar.xz')) continue
+    // TODO: NOTE: use `musl` flavor (In Rust, binaries targeting musl are statically linked by default)
+    if (!name.endsWith('aarch64-unknown-linux-musl.tar.xz') && !name.endsWith('x86_64-unknown-linux-musl.tar.xz')) continue
+    infoList.push(assetUrl)
     kit.log(`fetch asset: "${assetUrl}"...`)
     await resetDirectory(kit.fromTemp())
     const buffer = await (await fetchWithJumpProxy(assetUrl, { jumpMax: 8, timeout: 42 * 1000 })).buffer()
@@ -25,6 +27,7 @@ runKit(async (kit) => {
     await extractAutoAsync(kit.fromTemp(name), kit.fromTemp('unpack/'))
     await modifyRename(kit.fromTemp('unpack/ssservice'), kit.fromOutput(name.includes('x86_64') ? 'ssservice-linux-x64' : 'ssservice-linux-arm64'))
   }
+  await writeText(kit.fromOutput('ssservice.info'), infoList.join('\n'))
 
   kit.stepLog('add "package.json"')
   await editPackageJSON((packageJSON) => {
