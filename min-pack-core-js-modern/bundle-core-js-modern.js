@@ -11,8 +11,7 @@ runKit(async (kit) => {
   const CORE_JS_CONFIG = {
     targets: CORE_JS_TARGET,
     exclude: [
-      'core-js/stage/3', 'core-js/stage/2', 'core-js/stage/1', 'core-js/stage/0',
-      'core-js/stage/pre',
+      /^esnext\./,
       /^web\./
     ]
   }
@@ -35,6 +34,6 @@ runKit(async (kit) => {
   })
   await minifyFileListWithTerser({
     kit, fileList: [ filename ],
-    option: getTerserOption({ ecma: 6, comments: /license/ })
+    option: getTerserOption({ ecma: 8, comments: /license/ })
   })
 }, { title: 'bundle-core-js-modern' })
