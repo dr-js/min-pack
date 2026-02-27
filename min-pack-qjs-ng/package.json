@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "name": "@min-pack/qjs-ng",
+  "version": "0.0.1",
+  "description": "Latest 'qjs' & 'qjsc' binaries from 'quickjs-ng'",
+  "bin": {
+    "qjs-ng": "bin.js",
+    "qjs": "bin.js",
+    "qjsc": "bin.qjsc.js"
+  },
+  "scripts": {
+    "build": "node fetch-latest-qjs-ng.js",
+    "publish": "npm publish --access public output-gitignore/",
+    "build-publish": "dr-dev --rsl build publish"
+  },
+  "config": {
+    "RELEASE_NAME": "__TBD__"
+  }
+}
