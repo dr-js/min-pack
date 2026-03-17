@@ -1,5 +1,5 @@
 const { runKit } = require('@dr-js/core/library/node/kit.js')
-const { modifyCopy, modifyDeleteForce } = require('@dr-js/core/library/node/fs/Modify.js')
+const { modifyCopy, modifyDelete } = require('@dr-js/core/library/node/fs/Modify.js')
 
 const { minifyFileWithTerser, getTerserOption } = require('@dr-js/dev/library/minify.js')
 const { compileWithWebpack, commonFlag } = require('@dr-js/dev/library/webpack.js')
@@ -23,11 +23,11 @@ runKit(async (kit) => {
 
   kit.padLog('copy extra addon files')
   await modifyCopy(
-    kit.fromRoot('node_modules/onnxruntime-node/bin/napi-v3/'),
-    kit.fromOutput('addon-node_modules/onnxruntime-node/bin/napi-v3/')
+    kit.fromRoot('node_modules/onnxruntime-node/bin/napi-v6/'),
+    kit.fromOutput('addon-node_modules/onnxruntime-node/bin/napi-v6/')
   )
 
   kit.padLog('drop non-linux addon')
-  await modifyDeleteForce(kit.fromOutput('addon-node_modules/onnxruntime-node/bin/napi-v3/darwin/'))
-  await modifyDeleteForce(kit.fromOutput('addon-node_modules/onnxruntime-node/bin/napi-v3/win32/'))
+  await modifyDelete(kit.fromOutput('addon-node_modules/onnxruntime-node/bin/napi-v6/darwin/'))
+  await modifyDelete(kit.fromOutput('addon-node_modules/onnxruntime-node/bin/napi-v6/win32/'))
 }, { title: 'build.webpack' })

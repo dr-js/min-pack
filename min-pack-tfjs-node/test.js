@@ -1,35 +1,325 @@
 const { join } = require('node:path')
 
-const { setTimeoutAsync } = require('@dr-js/core/library/common/time.js')
+const { time } = require('@dr-js/core/library/common/format.js')
+const { setTimeoutAsync, createStepper } = require('@dr-js/core/library/common/time.js')
 const { runKit } = require('@dr-js/core/library/node/kit.js')
 const { TFJS } = require('./output-gitignore/')
 
 runKit(async (kit) => {
+  const stepper = createStepper()
+  const LOG = (...args) => kit.log(...args, `+${time(stepper())}`)
+
   // console.log(TFJS)
   TFJS.env.localModelPath = join(__dirname, 'tf-models-gitignore/')
   TFJS.env.allowRemoteModels = false
-  const extractor = await TFJS.pipeline('feature-extraction', 'Xenova/jina-embeddings-v2-base-zh', { quantized: true })
 
-  kit.log(new Date().toISOString(), 'extractor')
+  const extractorList = [
+    await TFJS.pipeline('feature-extraction', 'Xenova/multilingual-e5-small', { dtype: 'uint8' }), // MEM use: 510MB
+    // 0.000 0.758 ["How is the weather today","梨"]
+    // 0.012 0.760 ["How is the weather today","两个苹果"]
+    // 0.055 0.769 ["How is the weather today","苹果"]
+    // 0.063 0.771 ["How is the weather today","一个苹果"]
+    // 0.099 0.779 ["How is the weather today","去哪个饭店"]
+    // 0.110 0.781 ["Nice to meet you","两个苹果"]
+    // 0.120 0.783 ["Nice to meet you","中午吃什么"]
+    // 0.138 0.787 ["How is the weather today","apple"]
+    // 0.141 0.787 ["How is the weather today","手机"]
+    // 0.141 0.787 ["How is the weather today","水果"]
+    // 0.141 0.787 ["Nice to meet you","苹果"]
+    // 0.160 0.791 ["Nice to meet you","一个苹果"]
+    // 0.163 0.792 ["Nice to meet you","水果"]
+    // 0.168 0.793 ["Nice to meet you","apple"]
+    // 0.169 0.793 ["apple","去哪个饭店"]
+    // 0.181 0.796 ["Nice to meet you","梨"]
+    // 0.188 0.797 ["今天天气怎么样","apple"]
+    // 0.191 0.798 ["How is the weather today","中午吃什么"]
+    // 0.211 0.802 ["今天天气怎么样","Nice to meet you"]
+    // 0.217 0.804 ["Nice to meet you","手机"]
+    // 0.225 0.805 ["apple","中午吃什么"]
+    // 0.233 0.807 ["Nice to meet you","去哪个饭店"]
+    // 0.293 0.820 ["去哪个饭店","梨"]
+    // 0.295 0.820 ["今天天气怎么样","梨"]
+    // 0.321 0.826 ["How is the weather today","Nice to meet you"]
+    // 0.361 0.834 ["中午吃什么","梨"]
+    // 0.408 0.844 ["一个苹果","中午吃什么"]
+    // 0.415 0.846 ["apple","梨"]
+    // 0.416 0.846 ["今天天气怎么样","一个苹果"]
+    // 0.438 0.851 ["今天天气怎么样","水果"]
+    // 0.441 0.851 ["今天天气怎么样","两个苹果"]
+    // 0.446 0.852 ["两个苹果","中午吃什么"]
+    // 0.449 0.853 ["中午吃什么","手机"]
+    // 0.455 0.854 ["今天天气怎么样","苹果"]
+    // 0.465 0.856 ["苹果","中午吃什么"]
+    // 0.472 0.858 ["苹果","去哪个饭店"]
+    // 0.477 0.859 ["去哪个饭店","水果"]
+    // 0.478 0.859 ["一个苹果","去哪个饭店"]
+    // 0.486 0.861 ["两个苹果","梨"]
+    // 0.489 0.861 ["今天天气怎么样","去哪个饭店"]
+    // 0.494 0.862 ["今天天气怎么样","手机"]
+    // 0.495 0.863 ["两个苹果","去哪个饭店"]
+    // 0.504 0.864 ["去哪个饭店","手机"]
+    // 0.517 0.867 ["一个苹果","梨"]
+    // 0.523 0.869 ["apple","水果"]
+    // 0.533 0.871 ["梨","手机"]
+    // 0.539 0.872 ["今天天气怎么样","中午吃什么"]
+    // 0.545 0.873 ["中午吃什么","水果"]
+    // 0.556 0.875 ["苹果","梨"]
+    // 0.600 0.885 ["apple","手机"]
+    // 0.622 0.890 ["中午吃什么","去哪个饭店"]
+    // 0.645 0.894 ["apple","两个苹果"]
+    // 0.671 0.900 ["两个苹果","水果"]
+    // 0.672 0.900 ["一个苹果","水果"]
+    // 0.672 0.900 ["水果","梨"]
+    // 0.676 0.901 ["水果","手机"]
+    // 0.683 0.903 ["apple","一个苹果"]
+    // 0.685 0.903 ["How is the weather today","今天天气怎么样"]
+    // 0.706 0.907 ["苹果","水果"]
+    // 0.721 0.911 ["两个苹果","手机"]
+    // 0.769 0.921 ["apple","苹果"]
+    // 0.771 0.921 ["一个苹果","手机"]
+    // 0.842 0.936 ["苹果","手机"]
+    // 0.929 0.955 ["苹果","两个苹果"]
+    // 0.968 0.963 ["一个苹果","两个苹果"]
+    // 1.000 0.970 ["苹果","一个苹果"]
+
+    await TFJS.pipeline('feature-extraction', 'Xenova/paraphrase-multilingual-MiniLM-L12-v2', { dtype: 'uint8' }), // MEM use: 510MB
+    // 0.000 0.008 ["How is the weather today","一个苹果"]
+    // 0.010 0.017 ["How is the weather today","apple"]
+    // 0.019 0.026 ["How is the weather today","两个苹果"]
+    // 0.039 0.044 ["一个苹果","去哪个饭店"]
+    // 0.055 0.061 ["apple","去哪个饭店"]
+    // 0.060 0.064 ["How is the weather today","苹果"]
+    // 0.064 0.069 ["今天天气怎么样","一个苹果"]
+    // 0.068 0.073 ["今天天气怎么样","apple"]
+    // 0.072 0.076 ["Nice to meet you","apple"]
+    // 0.079 0.083 ["How is the weather today","梨"]
+    // 0.083 0.087 ["Nice to meet you","一个苹果"]
+    // 0.089 0.093 ["两个苹果","去哪个饭店"]
+    // 0.095 0.098 ["今天天气怎么样","两个苹果"]
+    // 0.122 0.124 ["Nice to meet you","两个苹果"]
+    // 0.128 0.129 ["How is the weather today","水果"]
+    // 0.133 0.134 ["苹果","去哪个饭店"]
+    // 0.133 0.135 ["How is the weather today","去哪个饭店"]
+    // 0.137 0.138 ["How is the weather today","手机"]
+    // 0.142 0.143 ["今天天气怎么样","梨"]
+    // 0.143 0.144 ["Nice to meet you","苹果"]
+    // 0.144 0.144 ["两个苹果","手机"]
+    // 0.148 0.149 ["今天天气怎么样","苹果"]
+    // 0.153 0.153 ["Nice to meet you","水果"]
+    // 0.155 0.155 ["梨","手机"]
+    // 0.163 0.163 ["今天天气怎么样","手机"]
+    // 0.175 0.175 ["去哪个饭店","水果"]
+    // 0.178 0.177 ["apple","中午吃什么"]
+    // 0.178 0.177 ["今天天气怎么样","水果"]
+    // 0.182 0.181 ["去哪个饭店","梨"]
+    // 0.187 0.186 ["中午吃什么","手机"]
+    // 0.193 0.192 ["一个苹果","中午吃什么"]
+    // 0.193 0.192 ["去哪个饭店","手机"]
+    // 0.195 0.193 ["Nice to meet you","梨"]
+    // 0.199 0.198 ["水果","手机"]
+    // 0.209 0.207 ["How is the weather today","Nice to meet you"]
+    // 0.211 0.209 ["Nice to meet you","手机"]
+    // 0.239 0.235 ["一个苹果","手机"]
+    // 0.244 0.240 ["苹果","手机"]
+    // 0.246 0.242 ["今天天气怎么样","去哪个饭店"]
+    // 0.260 0.255 ["两个苹果","中午吃什么"]
+    // 0.280 0.274 ["苹果","中午吃什么"]
+    // 0.305 0.298 ["今天天气怎么样","Nice to meet you"]
+    // 0.314 0.306 ["apple","手机"]
+    // 0.318 0.310 ["Nice to meet you","中午吃什么"]
+    // 0.330 0.322 ["中午吃什么","梨"]
+    // 0.358 0.348 ["中午吃什么","水果"]
+    // 0.367 0.357 ["How is the weather today","中午吃什么"]
+    // 0.411 0.399 ["Nice to meet you","去哪个饭店"]
+    // 0.465 0.451 ["今天天气怎么样","中午吃什么"]
+    // 0.516 0.499 ["中午吃什么","去哪个饭店"]
+    // 0.558 0.539 ["一个苹果","水果"]
+    // 0.573 0.553 ["apple","梨"]
+    // 0.585 0.565 ["apple","水果"]
+    // 0.617 0.595 ["一个苹果","梨"]
+    // 0.663 0.639 ["两个苹果","水果"]
+    // 0.695 0.669 ["两个苹果","梨"]
+    // 0.738 0.710 ["苹果","梨"]
+    // 0.749 0.720 ["苹果","水果"]
+    // 0.779 0.748 ["apple","两个苹果"]
+    // 0.823 0.791 ["一个苹果","两个苹果"]
+    // 0.871 0.836 ["水果","梨"]
+    // 0.914 0.877 ["苹果","两个苹果"]
+    // 0.938 0.900 ["apple","苹果"]
+    // 0.944 0.906 ["苹果","一个苹果"]
+    // 0.994 0.953 ["apple","一个苹果"]
+    // 1.000 0.959 ["How is the weather today","今天天气怎么样"]
+
+    await TFJS.pipeline('feature-extraction', 'Xenova/jina-embeddings-v2-base-zh', { dtype: 'q8' }), // MEM use: 330MB
+    // 0.000 -0.045 ["去哪个饭店","手机"]
+    // 0.072 0.015 ["How is the weather today","两个苹果"]
+    // 0.082 0.023 ["中午吃什么","手机"]
+    // 0.098 0.037 ["How is the weather today","一个苹果"]
+    // 0.100 0.039 ["How is the weather today","apple"]
+    // 0.105 0.042 ["Nice to meet you","手机"]
+    // 0.111 0.048 ["How is the weather today","苹果"]
+    // 0.121 0.056 ["How is the weather today","去哪个饭店"]
+    // 0.132 0.065 ["apple","中午吃什么"]
+    // 0.137 0.069 ["Nice to meet you","两个苹果"]
+    // 0.142 0.074 ["今天天气怎么样","苹果"]
+    // 0.154 0.084 ["How is the weather today","Nice to meet you"]
+    // 0.155 0.085 ["How is the weather today","手机"]
+    // 0.156 0.085 ["今天天气怎么样","手机"]
+    // 0.159 0.088 ["How is the weather today","水果"]
+    // 0.160 0.089 ["苹果","中午吃什么"]
+    // 0.164 0.092 ["Nice to meet you","一个苹果"]
+    // 0.169 0.096 ["How is the weather today","梨"]
+    // 0.174 0.100 ["Nice to meet you","苹果"]
+    // 0.178 0.104 ["两个苹果","中午吃什么"]
+    // 0.179 0.105 ["两个苹果","去哪个饭店"]
+    // 0.194 0.117 ["今天天气怎么样","两个苹果"]
+    // 0.217 0.136 ["一个苹果","去哪个饭店"]
+    // 0.223 0.141 ["今天天气怎么样","一个苹果"]
+    // 0.226 0.144 ["苹果","去哪个饭店"]
+    // 0.227 0.145 ["Nice to meet you","中午吃什么"]
+    // 0.228 0.146 ["Nice to meet you","梨"]
+    // 0.239 0.155 ["今天天气怎么样","去哪个饭店"]
+    // 0.241 0.157 ["今天天气怎么样","水果"]
+    // 0.243 0.158 ["apple","去哪个饭店"]
+    // 0.244 0.159 ["一个苹果","中午吃什么"]
+    // 0.247 0.162 ["去哪个饭店","梨"]
+    // 0.254 0.168 ["梨","手机"]
+    // 0.261 0.174 ["中午吃什么","梨"]
+    // 0.289 0.197 ["今天天气怎么样","梨"]
+    // 0.291 0.198 ["两个苹果","手机"]
+    // 0.292 0.199 ["两个苹果","梨"]
+    // 0.295 0.202 ["Nice to meet you","去哪个饭店"]
+    // 0.297 0.203 ["Nice to meet you","水果"]
+    // 0.311 0.215 ["Nice to meet you","apple"]
+    // 0.313 0.217 ["去哪个饭店","水果"]
+    // 0.321 0.224 ["今天天气怎么样","apple"]
+    // 0.323 0.225 ["今天天气怎么样","中午吃什么"]
+    // 0.329 0.230 ["两个苹果","水果"]
+    // 0.335 0.235 ["一个苹果","手机"]
+    // 0.338 0.238 ["How is the weather today","中午吃什么"]
+    // 0.341 0.240 ["水果","手机"]
+    // 0.347 0.245 ["今天天气怎么样","Nice to meet you"]
+    // 0.377 0.271 ["中午吃什么","去哪个饭店"]
+    // 0.412 0.300 ["苹果","梨"]
+    // 0.423 0.309 ["中午吃什么","水果"]
+    // 0.426 0.312 ["一个苹果","水果"]
+    // 0.431 0.316 ["一个苹果","梨"]
+    // 0.476 0.354 ["apple","两个苹果"]
+    // 0.480 0.357 ["apple","手机"]
+    // 0.527 0.397 ["apple","水果"]
+    // 0.536 0.404 ["apple","梨"]
+    // 0.552 0.418 ["苹果","手机"]
+    // 0.561 0.425 ["苹果","水果"]
+    // 0.627 0.480 ["apple","一个苹果"]
+    // 0.628 0.481 ["水果","梨"]
+    // 0.671 0.517 ["苹果","两个苹果"]
+    // 0.787 0.614 ["苹果","一个苹果"]
+    // 0.809 0.633 ["一个苹果","两个苹果"]
+    // 0.932 0.736 ["How is the weather today","今天天气怎么样"]
+    // 1.000 0.793 ["apple","苹果"]
+
+    await TFJS.pipeline('feature-extraction', 'maidalun1020/bce-embedding-base_v1', { dtype: 'q8' }) // MEM use: 690MB
+    // 0.000 0.147 ["How is the weather today","apple"]
+    // 0.021 0.163 ["今天天气怎么样","apple"]
+    // 0.046 0.183 ["apple","去哪个饭店"]
+    // 0.051 0.186 ["Nice to meet you","apple"]
+    // 0.089 0.216 ["How is the weather today","苹果"]
+    // 0.091 0.218 ["How is the weather today","水果"]
+    // 0.118 0.239 ["How is the weather today","梨"]
+    // 0.121 0.242 ["How is the weather today","手机"]
+    // 0.156 0.269 ["今天天气怎么样","手机"]
+    // 0.157 0.270 ["How is the weather today","一个苹果"]
+    // 0.160 0.272 ["今天天气怎么样","苹果"]
+    // 0.164 0.275 ["apple","中午吃什么"]
+    // 0.167 0.277 ["Nice to meet you","手机"]
+    // 0.175 0.284 ["How is the weather today","两个苹果"]
+    // 0.180 0.287 ["Nice to meet you","苹果"]
+    // 0.180 0.288 ["今天天气怎么样","梨"]
+    // 0.212 0.312 ["今天天气怎么样","水果"]
+    // 0.223 0.321 ["今天天气怎么样","两个苹果"]
+    // 0.230 0.326 ["Nice to meet you","水果"]
+    // 0.241 0.336 ["apple","手机"]
+    // 0.242 0.336 ["苹果","去哪个饭店"]
+    // 0.244 0.338 ["Nice to meet you","两个苹果"]
+    // 0.244 0.338 ["今天天气怎么样","一个苹果"]
+    // 0.254 0.345 ["去哪个饭店","梨"]
+    // 0.259 0.349 ["Nice to meet you","梨"]
+    // 0.260 0.350 ["苹果","中午吃什么"]
+    // 0.273 0.360 ["去哪个饭店","手机"]
+    // 0.290 0.373 ["How is the weather today","Nice to meet you"]
+    // 0.290 0.374 ["How is the weather today","去哪个饭店"]
+    // 0.298 0.380 ["去哪个饭店","水果"]
+    // 0.312 0.391 ["今天天气怎么样","Nice to meet you"]
+    // 0.321 0.398 ["Nice to meet you","一个苹果"]
+    // 0.330 0.405 ["中午吃什么","手机"]
+    // 0.342 0.414 ["中午吃什么","梨"]
+    // 0.358 0.427 ["两个苹果","去哪个饭店"]
+    // 0.365 0.432 ["Nice to meet you","去哪个饭店"]
+    // 0.386 0.449 ["今天天气怎么样","去哪个饭店"]
+    // 0.388 0.450 ["梨","手机"]
+    // 0.398 0.458 ["Nice to meet you","中午吃什么"]
+    // 0.412 0.469 ["一个苹果","去哪个饭店"]
+    // 0.421 0.476 ["How is the weather today","中午吃什么"]
+    // 0.454 0.502 ["两个苹果","中午吃什么"]
+    // 0.467 0.512 ["apple","梨"]
+    // 0.476 0.519 ["一个苹果","中午吃什么"]
+    // 0.479 0.522 ["今天天气怎么样","中午吃什么"]
+    // 0.483 0.524 ["两个苹果","手机"]
+    // 0.491 0.531 ["水果","手机"]
+    // 0.508 0.545 ["apple","水果"]
+    // 0.527 0.559 ["两个苹果","梨"]
+    // 0.544 0.572 ["中午吃什么","水果"]
+    // 0.548 0.575 ["apple","两个苹果"]
+    // 0.549 0.576 ["苹果","手机"]
+    // 0.555 0.581 ["一个苹果","手机"]
+    // 0.561 0.586 ["一个苹果","梨"]
+    // 0.565 0.589 ["苹果","梨"]
+    // 0.604 0.619 ["两个苹果","水果"]
+    // 0.640 0.647 ["一个苹果","水果"]
+    // 0.641 0.649 ["apple","一个苹果"]
+    // 0.667 0.669 ["中午吃什么","去哪个饭店"]
+    // 0.671 0.671 ["苹果","水果"]
+    // 0.761 0.743 ["apple","苹果"]
+    // 0.775 0.753 ["水果","梨"]
+    // 0.812 0.782 ["苹果","两个苹果"]
+    // 0.868 0.826 ["苹果","一个苹果"]
+    // 0.957 0.895 ["一个苹果","两个苹果"]
+    // 1.000 0.929 ["How is the weather today","今天天气怎么样"]
+  ]
+  // return console.log(extractorList)
+  // return console.log(extractorList.map((extractor) => extractor.model.config))
+
+  LOG('extractor prep done')
+
+  const normalizeList = (arr, _min = Math.min(...arr), _diff = Math.max(...arr) - _min) => arr.map((val) => (val - _min) / _diff)
+
+  const uniquePairs = (arr) => arr.flatMap((v, i) => arr.slice(i + 1).map((w) => [ v, w ]))
 
   let index = 999
   while (index--) {
-    // Compute sentence embeddings
-    const texts = [ 'How is the weather today?', '今天天气怎么样?' ]
-    const output = await extractor(texts, { pooling: 'mean', normalize: true })
-    kit.log(new Date().toISOString(), 'output')
-    // console.log(output)
-    // Tensor {
-    //    dims: [2, 768],
-    //    type: 'float32',
-    //    data: Float32Array(1536)[...],
-    //    size: 1536
-    // }
+    LOG('== loop left ==', index)
+    for (const extractor of extractorList) {
+      LOG('= Model =', extractor.model.config._name_or_path)
+      const res = []
+      for (const texts of uniquePairs([
+        'How is the weather today', '今天天气怎么样',
+        'Nice to meet you',
+        'apple', '苹果', '一个苹果', '两个苹果',
+        '中午吃什么', '去哪个饭店',
+        '水果', '梨', '手机'
+      ])) {
+        const output = await extractor(texts, { pooling: 'mean', normalize: true })
+        // console.log('output', output, output[ 0 ].data.length) // Tensor { dims: [2, 768], type: 'float32', data: Float32Array(1536)[...], size: 1536 }
+        const score = TFJS.cos_sim(output[ 0 ].data, output[ 1 ].data) // Compute cosine similarity between the two embeddings
+        LOG('score', score.toFixed(3), JSON.stringify(texts)) // 0.7061612582768001
+        res.push({ texts, score })
+      }
 
-    // Compute cosine similarity between the two embeddings
-    const score = TFJS.cos_sim(output[ 0 ].data, output[ 1 ].data)
-    kit.log(new Date().toISOString(), 'score', score) // 0.7061612582768001
-
-    await setTimeoutAsync(200)
+      const scoreNorm = normalizeList(res.map((v) => v.score))
+      console.log(res.map(({ texts, score }, index) => `${scoreNorm[ index ].toFixed(3)} ${score.toFixed(3)} ${JSON.stringify(texts)}`).sort().join('\n'))
+    }
+    await setTimeoutAsync(500)
+    if (globalThis.gc) globalThis.gc()
+    await setTimeoutAsync(2000)
   }
 })

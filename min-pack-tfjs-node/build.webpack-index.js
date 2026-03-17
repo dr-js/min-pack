@@ -1,3 +1,3 @@
-import * as TFJS from '@xenova/transformers'
+import * as TFJS from '@huggingface/transformers'
 
 export { TFJS }
