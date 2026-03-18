@@ -1,5 +1,6 @@
 const { runKit } = require('@dr-js/core/library/node/kit.js')
 const { modifyCopy, modifyDelete } = require('@dr-js/core/library/node/fs/Modify.js')
+const { getFileListSync } = require('@dr-js/core/library/node/fs/Directory.js')
 
 const { minifyFileWithTerser, getTerserOption } = require('@dr-js/dev/library/minify.js')
 const { compileWithWebpack, commonFlag } = require('@dr-js/dev/library/webpack.js')
@@ -30,4 +31,9 @@ runKit(async (kit) => {
   kit.padLog('drop non-linux addon')
   await modifyDelete(kit.fromOutput('addon-node_modules/onnxruntime-node/bin/napi-v6/darwin/'))
   await modifyDelete(kit.fromOutput('addon-node_modules/onnxruntime-node/bin/napi-v6/win32/'))
+
+  kit.padLog('copy typing files')
+  await modifyCopy(kit.fromRoot('build.webpack-index.d.ts-txt'), kit.fromOutput('index.d.ts'))
+  await modifyCopy(kit.fromRoot('node_modules/@huggingface/transformers/types/'), kit.fromOutput('tfjs-types/'))
+  for (const file of getFileListSync(kit.fromOutput('tfjs-types/'))) !file.endsWith('.ts') && await modifyDelete(file) // drop non .ts files
 }, { title: 'build.webpack' })

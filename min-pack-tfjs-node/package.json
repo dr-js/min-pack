@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@min-pack/tfjs-node",
-  "version": "3.8.1",
+  "version": "3.8.1-patch.0",
   "description": "Latest transformers.js with linux x64/arm64 binary preloaded for Node.js usage",
   "main": "index.js",
   "scripts": {

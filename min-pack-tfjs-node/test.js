@@ -17,7 +17,7 @@ runKit(async (kit) => {
     await TFJS.pipeline('feature-extraction', 'Xenova/multilingual-e5-small', { dtype: 'uint8' }), // MEM use: 510MB
     // 0.000 0.758 ["How is the weather today","梨"]
     // 0.012 0.760 ["How is the weather today","两个苹果"]
-    // 0.055 0.769 ["How is the weather today","苹果"]
+    // 0.056 0.769 ["How is the weather today","苹果"]
     // 0.063 0.771 ["How is the weather today","一个苹果"]
     // 0.099 0.779 ["How is the weather today","去哪个饭店"]
     // 0.110 0.781 ["Nice to meet you","两个苹果"]
@@ -310,7 +310,8 @@ runKit(async (kit) => {
       ])) {
         const output = await extractor(texts, { pooling: 'mean', normalize: true })
         // console.log('output', output, output[ 0 ].data.length) // Tensor { dims: [2, 768], type: 'float32', data: Float32Array(1536)[...], size: 1536 }
-        const score = TFJS.cos_sim(output[ 0 ].data, output[ 1 ].data) // Compute cosine similarity between the two embeddings
+        // const score = TFJS.cos_sim(output[ 0 ].data, output[ 1 ].data) // Compute cosine similarity between the two embeddings
+        const score = TFJS.dot(output[ 0 ].data, output[ 1 ].data) // Compute dot product as similarity between the two embeddings
         LOG('score', score.toFixed(3), JSON.stringify(texts)) // 0.7061612582768001
         res.push({ texts, score })
       }
