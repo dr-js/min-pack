@@ -1,13 +1,13 @@
 {
   "private": true,
   "name": "@min-pack/tfjs-node",
-  "version": "3.8.1-patch.0",
+  "version": "3.8.1-patch.1",
   "description": "Latest transformers.js with linux x64/arm64 binary preloaded for Node.js usage",
   "main": "index.js",
   "scripts": {
     "build": "node build.js",
     "build-webpack": "node build.webpack.js",
-    "publish": "npm publish --access public output-gitignore/",
+    "publish": "npm publish --tag latest --access public output-gitignore/",
     "build-publish": "dr-dev --rsl build publish"
   },
   "config": {

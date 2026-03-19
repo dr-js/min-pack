@@ -1,2 +1,2 @@
 import * as TFJS from './tfjs-types/transformers'
-export { TFJS }
+export default TFJS // to match webpack commonjs2

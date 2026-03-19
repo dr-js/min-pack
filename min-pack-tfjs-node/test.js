@@ -3,7 +3,7 @@ const { join } = require('node:path')
 const { time } = require('@dr-js/core/library/common/format.js')
 const { setTimeoutAsync, createStepper } = require('@dr-js/core/library/common/time.js')
 const { runKit } = require('@dr-js/core/library/node/kit.js')
-const { TFJS } = require('./output-gitignore/')
+const TFJS = require('./output-gitignore/')
 
 runKit(async (kit) => {
   const stepper = createStepper()
