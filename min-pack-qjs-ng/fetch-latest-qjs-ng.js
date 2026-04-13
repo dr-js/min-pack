@@ -18,13 +18,12 @@ runKit(async (kit) => {
   const infoList = [ RELEASE_NAME ]
   for (const { name, browser_download_url: assetUrl } of RELEASE_ASSET_LIST) {
     if (
-      !name.endsWith('qjs-linux-aarch64') && !name.endsWith('qjs-linux-x86_64') &&
-      !name.endsWith('qjsc-linux-aarch64') && !name.endsWith('qjsc-linux-x86_64')
+      !name.endsWith('qjs-linux-aarch64') && !name.endsWith('qjs-linux-x86_64')
     ) continue
     infoList.push(assetUrl)
     kit.log(`fetch asset: "${assetUrl}"...`)
     const buffer = await (await fetchWithJumpProxy(assetUrl, { jumpMax: 8, timeout: 42 * 1000 })).buffer()
-    const bin = name.split('/').pop().replace('x86_64', 'x64').replace('aarch64', 'amd64')
+    const bin = name.split('/').pop()
     writeBufferSync(kit.fromOutput(bin), buffer)
     chmodSync(kit.fromOutput(bin), 0o755) // NOTE: add executable permission
   }
@@ -37,7 +36,6 @@ runKit(async (kit) => {
     packageJSON[ 'config' ] = { RELEASE_NAME }
     return packageJSON
   }, kit.fromRoot('package.json'), kit.fromOutput('package.json'))
-  modifyCopySync(kit.fromRoot('bin.js'), kit.fromOutput('bin.js'))
-  modifyCopySync(kit.fromRoot('bin.qjsc.js'), kit.fromOutput('bin.qjsc.js'))
+  modifyCopySync(kit.fromRoot('bin.sh'), kit.fromOutput('bin.sh'))
   modifyCopySync(kit.fromRoot('README.md'), kit.fromOutput('README.md'))
 }, { title: 'fetch-latest-ss-rust' })
