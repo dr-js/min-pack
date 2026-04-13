@@ -25,7 +25,7 @@ runKit(async (kit) => {
     const buffer = await (await fetchWithJumpProxy(assetUrl, { jumpMax: 8, timeout: 42 * 1000 })).buffer()
     await writeBuffer(kit.fromTemp(name), buffer)
     await extractAutoAsync(kit.fromTemp(name), kit.fromTemp('unpack/'))
-    await modifyRename(kit.fromTemp('unpack/ssservice'), kit.fromOutput(name.includes('x86_64') ? 'ssservice-linux-x64' : 'ssservice-linux-arm64'))
+    await modifyRename(kit.fromTemp('unpack/ssservice'), kit.fromOutput(name.includes('x86_64') ? 'ssservice-linux-x86_64' : 'ssservice-linux-aarch64'))
   }
   await writeText(kit.fromOutput('ssservice.info'), infoList.join('\n'))
 
@@ -36,6 +36,6 @@ runKit(async (kit) => {
     packageJSON[ 'config' ] = { RELEASE_NAME }
     return packageJSON
   }, kit.fromRoot('package.json'), kit.fromOutput('package.json'))
-  await modifyCopy(kit.fromRoot('bin.js'), kit.fromOutput('bin.js'))
+  await modifyCopy(kit.fromRoot('bin.sh'), kit.fromOutput('bin.sh'))
   await modifyCopy(kit.fromRoot('README.md'), kit.fromOutput('README.md'))
 }, { title: 'fetch-latest-ss-rust' })
