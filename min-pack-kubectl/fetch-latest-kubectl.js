@@ -16,7 +16,7 @@ runKit(async (kit) => {
   await writeText(kit.fromOutput('kubectl.info'), RELEASE_NAME)
   for (const arch of [ 'amd64', 'arm64' ]) {
     kit.log(`fetch binary for: "${arch}"...`)
-    const file = kit.fromOutput(arch === 'amd64' ? 'kubectl-linux-x64' : 'kubectl-linux-arm64')
+    const file = kit.fromOutput(`kubectl-linux-${arch}`)
     const buffer = await (await fetchWithJump(`https://dl.k8s.io/release/${RELEASE_NAME}/bin/linux/${arch}/kubectl`, { jumpMax: 8, timeout: 420 * 1000 })).buffer()
     await writeBuffer(file, buffer)
     chmodSync(file, 0o755) // NOTE: add executable permission
@@ -29,6 +29,6 @@ runKit(async (kit) => {
     packageJSON[ 'config' ] = { RELEASE_NAME }
     return packageJSON
   }, kit.fromRoot('package.json'), kit.fromOutput('package.json'))
-  await modifyCopy(kit.fromRoot('bin.js'), kit.fromOutput('bin.js'))
+  await modifyCopy(kit.fromRoot('bin.sh'), kit.fromOutput('bin.sh'))
   await modifyCopy(kit.fromRoot('README.md'), kit.fromOutput('README.md'))
 }, { title: 'fetch-latest-ss-rust' })
