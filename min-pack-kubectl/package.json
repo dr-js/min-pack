@@ -1,18 +1,31 @@
 {
   "private": true,
   "name": "@min-pack/kubectl",
-  "version": "0.0.5",
-  "description": "Latest 'kubectl' binaries from 'kubernetes.io'",
+  "version": "0.0.6",
+  "description": "Latest 'kubectl' linux x86|arm64 binary from 'kubernetes.io'",
   "bin": {
     "min-kubectl": "bin.sh",
     "kubectl": "bin.sh"
   },
   "scripts": {
     "build": "node fetch-latest-kubectl.js",
-    "publish": "npm publish --access public output-gitignore/",
+    "pub-linux-x64": "npm publish --access public output-gitignore/kubectl-linux-x64/",
+    "pub-linux-arm64": "npm publish --access public output-gitignore/kubectl-linux-arm64/",
+    "pub-meta": "npm publish --access public output-gitignore/meta/",
+    "publish": "dr-dev --rsl pub-linux-x64 pub-linux-arm64 pub-meta",
     "build-publish": "dr-dev --rsl build publish"
   },
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64", "arm64"
+  ],
   "config": {
     "RELEASE_NAME": "__TBD__"
+  },
+  "optionalDependencies": {
+    "@min-pack/kubectl-x64": "0.0.6",
+    "@min-pack/kubectl-arm64": "0.0.6"
   }
 }
