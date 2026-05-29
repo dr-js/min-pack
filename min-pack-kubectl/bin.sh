@@ -2,7 +2,7 @@
 
 OS="$(uname -s)"
 ARCH="$(uname -m)"
-DIR="$(cd "$(dirname "$0")" && pwd)"
+DIR="$(dirname "$(realpath "$0")")"
 
 if [[ "$OS" == "Linux" && "$ARCH" == "x86_64" ]]; then exec "$DIR/kubectl-linux-amd64" "$@"
 elif [[ "$OS" == "Linux" && "$ARCH" == "aarch64" ]]; then exec "$DIR/kubectl-linux-arm64" "$@"
