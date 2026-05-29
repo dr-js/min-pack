@@ -33,7 +33,7 @@ runKit(async (kit) => {
     chmodSync(binPath, 0o755) // NOTE: add executable permission
     await editPackageJSON((packageJSON) => {
       packageJSON[ 'private' ] = packageJSON[ 'bin' ] = packageJSON[ 'scripts' ] = packageJSON[ 'optionalDependencies' ] = undefined
-      packageJSON[ 'name' ] += `-${arch}`
+      packageJSON[ 'name' ] += `-linux-${arch}`
       packageJSON[ 'cpu' ] = [ arch ]
       packageJSON[ 'config' ] = { RELEASE_NAME, KUBECTL_BIN_SHA256: bufferSha256Hex }
       return packageJSON

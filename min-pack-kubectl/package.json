@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@min-pack/kubectl",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Latest 'kubectl' linux x86|arm64 binary from 'kubernetes.io'",
   "bin": {
     "min-kubectl": "bin.sh",
@@ -25,7 +25,7 @@
     "RELEASE_NAME": "__TBD__"
   },
   "optionalDependencies": {
-    "@min-pack/kubectl-x64": "0.0.6",
-    "@min-pack/kubectl-arm64": "0.0.6"
+    "@min-pack/kubectl-linux-x64": "0.0.7",
+    "@min-pack/kubectl-linux-arm64": "0.0.7"
   }
 }
