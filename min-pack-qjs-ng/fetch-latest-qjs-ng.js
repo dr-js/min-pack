@@ -5,6 +5,7 @@ const { modifyCopySync } = require('@dr-js/core/library/node/fs/Modify.js')
 const { editPackageJSON } = require('@dr-js/core/library/node/module/PackageJSON.js')
 const { fetchWithJumpProxy } = require('@dr-js/core/library/node/module/Software/npm.js')
 const { runKit } = require('@dr-js/core/library/node/kit.js')
+const { fetchBufferWithCache } = require('../function.js')
 
 runKit(async (kit) => {
   kit.padLog('reset output')
@@ -20,9 +21,9 @@ runKit(async (kit) => {
     if (
       !name.endsWith('qjs-linux-aarch64') && !name.endsWith('qjs-linux-x86_64')
     ) continue
-    infoList.push(assetUrl)
     kit.log(`fetch asset: "${assetUrl}"...`)
-    const buffer = await (await fetchWithJumpProxy(assetUrl, { jumpMax: 8, timeout: 42 * 1000 })).buffer()
+    const { buffer, bufferSha256Hex } = await fetchBufferWithCache(kit, assetUrl)
+    infoList.push(`${bufferSha256Hex} ${assetUrl}`)
     const bin = name.split('/').pop()
     writeBufferSync(kit.fromOutput(bin), buffer)
     chmodSync(kit.fromOutput(bin), 0o755) // NOTE: add executable permission
