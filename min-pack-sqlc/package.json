@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "name": "@min-pack/sqlc",
+  "version": "0.0.1",
+  "description": "Latest 'sqlc' linux x86|arm64 binary from 'sqlc-dev/sqlc'",
+  "bin": {
+    "min-sqlc": "bin.sh",
+    "sqlc": "bin.sh"
+  },
+  "scripts": {
+    "build": "node fetch-latest-sqlc.js",
+    "pub-linux-x64": "npm publish --access public output-gitignore/sqlc-linux-x64/",
+    "pub-linux-arm64": "npm publish --access public output-gitignore/sqlc-linux-arm64/",
+    "pub-meta": "npm publish --access public output-gitignore/meta/",
+    "publish": "dr-dev --rsl pub-linux-x64 pub-linux-arm64 pub-meta",
+    "build-publish": "dr-dev --rsl build publish"
+  },
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64", "arm64"
+  ],
+  "config": {
+    "RELEASE_NAME": "__TBD__"
+  },
+  "optionalDependencies": {
+    "@min-pack/sqlc-linux-x64": "0.0.1",
+    "@min-pack/sqlc-linux-arm64": "0.0.1"
+  }
+}
