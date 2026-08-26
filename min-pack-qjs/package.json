@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "name": "@min-pack/qjs",
+  "version": "0.0.1",
+  "description": "Latest 'qjs' & 'qjsc' linux x86|arm64 binary from 'bellard/quickjs'",
+  "bin": {
+    "min-qjs": "bin.sh",
+    "min-qjsc": "bin.qjsc.sh",
+    "qjs": "bin.sh",
+    "qjsc": "bin.qjsc.sh"
+  },
+  "scripts": {
+    "build": "node build.js",
+    "publish": "npm publish --access public output-gitignore/",
+    "build-publish": "dr-dev --rsl build publish"
+  },
+  "os": [ "linux" ],
+  "cpu": [ "x64", "arm64" ],
+  "config": {
+    "QJS_VERSION": "2026-06-04",
+    "QJS_SRC_URL": "https://github.com/bellard/quickjs/archive/04be246001599f5995fa2f2d8c91a0f198d3f34c.zip"
+  }
+}
